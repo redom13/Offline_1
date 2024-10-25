@@ -20,8 +20,8 @@ def main():
     lti = LTI_Discrete(impulse_response)
     unit_impulses,coefficients = lti.linear_combination_of_impulses(input_signal)
     unit_impluse_responses,output_signal = lti.output(input_signal)
-    plot_all_discrete(unit_impulses,final_signal=input_signal,coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path_discrete}/unit_impulses.png')
-    plot_all_discrete(unit_impluse_responses,final_signal=output_signal,titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path_discrete}/unit_impulse_responses.png')
+    plot_all_discrete(unit_impulses,final_signal=input_signal,final_signal_title="Sum",main_title="Impulses Multiplied by Coefficients",coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path_discrete}/unit_impulses.png')
+    plot_all_discrete(unit_impluse_responses,final_signal=output_signal,final_signal_title="Output",main_title="Response of Input Signal",titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path_discrete}/unit_impulse_responses.png')
 
     # Continuous Signals
     img_root_path_continuous = './Continuous Signal Plots'
@@ -31,11 +31,11 @@ def main():
     lti = LTI_Continuous(impulse_response)
     delta = 0.5
     delayed_signals,coefficients = lti.linear_combination_of_impulses(input_signal,delta)
-    plot_all_continuous(delayed_signals,delta=delta,coefficients=coefficients,saveTo=f'{img_root_path_continuous}/lti_input.png')
+    plot_all_continuous(delayed_signals,delta=delta,coefficients=coefficients,main_title='Impulses Multiplied by Coefficients',title_prefix='δ',final_signal_title='Reconstructed Signal',saveTo=f'{img_root_path_continuous}/lti_input.png')
     output,delayed_impulses,coefficients = lti.output_approx(input_signal,delta)
-    plot_all_continuous(delayed_impulses,delta=delta,coefficients=coefficients,saveTo=f'{img_root_path_continuous}/lti_output.png')
+    plot_all_continuous(delayed_impulses,delta=delta,coefficients=coefficients,main_title='Response of Impulse Signal',title_prefix='h',final_signal_title='Output=Sum',saveTo=f'{img_root_path_continuous}/lti_output.png')
     deltas = [0.5,0.1,0.05,0.01]
     plot_compare_input(input_signal=input_signal,deltas=deltas,saveTo=f'{img_root_path_continuous}/lti_compare_input.png')
-    plot_compare_output(input_signal=input_signal,impulse_response=impulse_response,deltas=deltas,saveTo=f'{img_root_path_continuous}/lti_compare_output.png')
+    plot_compare_output(input_signal=input_signal,impulse_response=impulse_response,main_title='Approximate Output as ∇ tends to 0',original_output_label='y(t)=1-e^(-t)u(t)',deltas=deltas,saveTo=f'{img_root_path_continuous}/lti_compare_output.png')
 
 main()

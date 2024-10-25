@@ -33,8 +33,10 @@ def plot_all_continuous(
         INF=3,
         delta=0.5,
         # final_signal=None,
+        main_title=None,
+        final_signal_title=None,
         coefficients=None,
-        titles=None,
+        title_prefix=None,
         y_range=(-0.05, 1.05),
         figsize=(15, 10),
         saveTo=None
@@ -52,6 +54,8 @@ def plot_all_continuous(
         ax = axes[i]
         x = np.linspace(-INF, INF,1000)
         y = signal.func(x) * coefficients[i]*delta if coefficients is not None else signal.values
+        n_val = math.floor(float(INF)/delta)
+        indices = np.arange(-n_val,n_val,dtype=float)
         # print(signal.func(x),coefficients[i])
         x = np.append(x, INF)
         y = np.append(y, 0)
@@ -61,8 +65,8 @@ def plot_all_continuous(
         # ax.set_ylim(*y_range)
         ax.set_xticks(np.arange(-INF, INF + 1, 1))  # Set x-ticks at intervals of 1
         ax.set_yticks(np.arange(0, y_range[1], 0.5))  # Set y-ticks at intervals of 0.5
-        if titles and i < len(titles):
-            ax.set_title(titles[i])
+        if title_prefix:
+            ax.set_title(f'{title_prefix}(t-({indices[i]}∇))x({indices[i]}∇)∇')
         ax.set_xlabel('t (Time)')
         ax.set_ylabel('x(t)')
         ax.grid(True)
@@ -84,13 +88,15 @@ def plot_all_continuous(
     ax.plot(x, final_output)
     ax.set_xlim(-x_high, x_high)
     # ax.set_ylim(*y_range)
-    ax.set_title('Final Signal')
+    ax.set_title(final_signal_title)
     ax.set_xlabel('t (Time)')
     ax.set_ylabel('x(t)')
     ax.grid(True)
 
     for j in range(len(signals) + 1, len(axes)):
         fig.delaxes(axes[j])
+
+    fig.suptitle(main_title, fontsize=16)
 
     plt.tight_layout()
     if saveTo is not None:
@@ -102,6 +108,7 @@ def plot_compare_input(
         input_signal,
         # actual_signal,
         deltas,
+        main_title=None,
         INF=3,
         y_range=(-0.05, 1.05),
         figsize=(15, 10),
@@ -122,17 +129,18 @@ def plot_compare_input(
         y_approx = sum([delayed_signals[i].func(x)*coefficients[i]*delta for i in range(len(delayed_signals))])
         y_actual = input_signal.func(x)
         ax.set_xlim(-x_high, x_high)
-        ax.plot(x,y_approx,label='y_approx')
-        ax.plot(x,y_actual,label='y_actual')
+        ax.plot(x,y_approx,label='Reconstructed')
+        ax.plot(x,y_actual,label='x(t)')
         ax.legend()
         ax.set_xticks(np.arange(-INF, INF + 1, 1))
-        ax.set_yticks(np.arange(0, y_range[1], 0.5))
-        ax.set_title(f'delta={delta}')
+        ax.set_title(f'∇={delta}')
         ax.grid(True)
 
     for j in range(len(deltas),len(axes)):
         fig.delaxes(axes[j])
     plt.tight_layout()
+
+    fig.suptitle(main_title, fontsize=16)
 
     if saveTo is not None:
         plt.savefig(saveTo)
@@ -142,6 +150,8 @@ def plot_compare_input(
 def plot_compare_output(
         input_signal,
         impulse_response,
+        main_title=None,
+        original_output_label=None,
         deltas=[],
         INF=3,
         figsize=(15, 10),
@@ -162,15 +172,17 @@ def plot_compare_output(
         output,delayed_impulses,coefficients = lti.output_approx(input_signal,delta)
         y_approx = output.func(x_values)
         ax.set_xlim(-x_high, x_high)
-        ax.plot(x_values,y_approx,label='y_approx')
-        ax.plot(x_values,output_original,label='y_actual')
+        ax.plot(x_values,y_approx,label='y_approx(t)')
+        ax.plot(x_values,output_original,label=original_output_label)
         ax.legend()
         ax.set_xticks(np.arange(-INF, INF + 1, 1))
-        ax.set_title(f'delta={delta}')
+        ax.set_title(f'∇={delta}')
         ax.grid(True)
 
     for j in range(len(deltas),len(axes)):
         fig.delaxes(axes[j])
+
+    fig.suptitle(main_title, fontsize=16)
 
     plt.tight_layout()
     if saveTo is not None:
@@ -186,10 +198,10 @@ def plot_compare_output(
 #     # input_signal = cs.ContinuousSignal(lambda x: 1 if x>=0 and x<=1 else 0)
 #     delta = 0.5
 #     delayed_signals,coefficients = lti.linear_combination_of_impulses(input_signal,delta)
-#     plot_all_continuous(delayed_signals,delta=delta,coefficients=coefficients,saveTo=f'{img_root_path}/lti.png')
-#     output,delayed_impulses,coefficients = lti.output_approx(input_signal,delta)
-#     plot_all_continuous(delayed_impulses,delta=delta,coefficients=coefficients,saveTo=f'{img_root_path}/lti_output.png')
-#     # output_original = cs.ContinuousSignal(lambda x: np.ones_like(x)-np.exp(-x) if x>=0 else 0)
-#     # plot_compare_input(input_signal=input_signal,deltas=[0.5,0.1,0.05,0.01],saveTo=f'{img_root_path}/lti_compare.png')
-#     plot_compare_output(input_signal=input_signal,impulse_response=impulse_response,deltas=[0.5,0.1,0.05,0.01],saveTo=f'{img_root_path}/lti_compare_output.png')
+#     # plot_all_continuous(delayed_signals,delta=delta,title_prefix='δ',final_signal_title='Reconstructed Signal',coefficients=coefficients,saveTo=f'{img_root_path}/lti.png')
+#     # output,delayed_impulses,coefficients = lti.output_approx(input_signal,delta)
+#     # plot_all_continuous(delayed_impulses,delta=delta,title_prefix='h',final_signal_title='Output=Sum',coefficients=coefficients,saveTo=f'{img_root_path}/lti_output.png')
+#     # # output_original = cs.ContinuousSignal(lambda x: np.ones_like(x)-np.exp(-x) if x>=0 else 0)
+#     plot_compare_input(input_signal=input_signal,deltas=[0.5,0.1,0.05,0.01],saveTo=f'{img_root_path}/lti_compare.png')
+#     plot_compare_output(input_signal=input_signal,impulse_response=impulse_response,original_output_label='y(t)=1-e^(-t)u(t)',deltas=[0.5,0.1,0.05,0.01],saveTo=f'{img_root_path}/lti_compare_output.png')
 # main()

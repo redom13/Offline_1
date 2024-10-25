@@ -32,6 +32,8 @@ class LTI_Discrete:
 def plot_all_discrete(
         signals,
         final_signal=None,
+        final_signal_title=None,
+        main_title=None,
         coefficients=None,
         titles=None,
         y_range=(-1, 4),
@@ -66,7 +68,7 @@ def plot_all_discrete(
         ax.stem(x, y)
         ax.set_xticks(np.arange(-final_signal.INF, final_signal.INF + 1, 1))
         ax.set_ylim(*y_range)
-        ax.set_title('Final Signal')
+        ax.set_title(final_signal_title)
         ax.set_xlabel('n (Time Index)')
         ax.set_ylabel('x[n]')
         ax.grid(True)
@@ -74,6 +76,8 @@ def plot_all_discrete(
     # Hide any unused subplots
     for j in range(len(signals) + (1 if final_signal is not None else 0), len(axes)):
         fig.delaxes(axes[j])
+
+    fig.suptitle(main_title, fontsize=16)
 
     plt.tight_layout()
     if saveTo is not None:
@@ -94,6 +98,6 @@ def plot_all_discrete(
 #     unit_impulses,coefficients = lti.linear_combination_of_impulses(input_signal)
 #     # unit_impluse_responses,c = lti.linear_combination_of_impulses(impulse_response)
 #     unit_impluse_responses,output_signal = lti.output(input_signal)
-#     plot_all_discrete(unit_impulses,final_signal=input_signal,coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulses.png')
-#     plot_all_discrete(unit_impluse_responses,final_signal=output_signal,titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulse_responses.png')
+#     plot_all_discrete(unit_impulses,final_signal=input_signal,final_signal_title="Sum",main_title="Impulses Multiplied by Coefficients",coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulses.png')
+#     plot_all_discrete(unit_impluse_responses,final_signal=output_signal,final_signal_title="Output",main_title="Response of Input Signal",titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulse_responses.png')
 # main()
