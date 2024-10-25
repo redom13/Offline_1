@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 class ContinuousSignal:
     def __init__(self,func) -> None:
-        self.func = func
+        self.func = np.vectorize(func) 
 
     def shift(self,shift):
         shifted_signal = lambda x: self.func(x-shift) # lambda for anonymous function,only arg is x

@@ -29,7 +29,7 @@ class LTI_Discrete:
         
         return constituents,output_signal
     
-def plot_all(
+def plot_all_discrete(
         signals,
         final_signal=None,
         coefficients=None,
@@ -81,19 +81,19 @@ def plot_all(
     else:
         plt.show()
 
-def main():
-    img_root_path = '.'
-    input_signal = ds.DiscreteSignal(5)
-    input_signal.set_value_at_time(0, 0.5)
-    input_signal.set_value_at_time(1, 2)
-    impulse_response = ds.DiscreteSignal(5)
-    impulse_response.set_value_at_time(0, 1)
-    impulse_response.set_value_at_time(1, 1)
-    impulse_response.set_value_at_time(2, 1)
-    lti = LTI_Discrete(impulse_response)
-    unit_impulses,coefficients = lti.linear_combination_of_impulses(input_signal)
-    # unit_impluse_responses,c = lti.linear_combination_of_impulses(impulse_response)
-    unit_impluse_responses,output_signal = lti.output(input_signal)
-    plot_all(unit_impulses,final_signal=input_signal,coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulses.png')
-    plot_all(unit_impluse_responses,final_signal=output_signal,titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulse_responses.png')
-main()
+# def main():
+#     img_root_path = '.'
+#     input_signal = ds.DiscreteSignal(5)
+#     input_signal.set_value_at_time(0, 0.5)
+#     input_signal.set_value_at_time(1, 2)
+#     impulse_response = ds.DiscreteSignal(5)
+#     impulse_response.set_value_at_time(0, 1)
+#     impulse_response.set_value_at_time(1, 1)
+#     impulse_response.set_value_at_time(2, 1)
+#     lti = LTI_Discrete(impulse_response)
+#     unit_impulses,coefficients = lti.linear_combination_of_impulses(input_signal)
+#     # unit_impluse_responses,c = lti.linear_combination_of_impulses(impulse_response)
+#     unit_impluse_responses,output_signal = lti.output(input_signal)
+#     plot_all_discrete(unit_impulses,final_signal=input_signal,coefficients=coefficients,titles=[f"δ[n-({i})]x[{i}]" for i in range(-input_signal.INF,input_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulses.png')
+#     plot_all_discrete(unit_impluse_responses,final_signal=output_signal,titles=[f"h[n-({i})]x[{i}]" for i in range(-output_signal.INF,output_signal.INF+1)],saveTo=f'{img_root_path}/unit_impulse_responses.png')
+# main()
